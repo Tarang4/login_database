@@ -90,7 +90,7 @@ class _UpadateScreenState extends State<UpaDateScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.10,
+                height: MediaQuery.of(context).size.height * 0.04,
               ),
               Form(
                 key: updateScreenKey,
@@ -102,7 +102,15 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                         left: 16, right: 16, top: 14, bottom: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: [ IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.arrow_back,
+                            size: 34,
+                          )),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -112,9 +120,13 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                                   fontSize: 30.0, fontWeight: FontWeight.w700),
                             ),
                             TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 updateData();
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProfileScreen()));
                               },
                               child: Text(
                                 "Save",
@@ -339,6 +351,7 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                           height: 33,
                           child: TextFormField(
                             focusNode: emailFocus,
+                            readOnly: true,
                             validator: (value) {
                               if (!EmailValidator.validate(value ?? "")) {
                                 return 'Enter valid email';
@@ -622,7 +635,7 @@ class _UpadateScreenState extends State<UpaDateScreen> {
       ..fName = _fNameController.text
       ..lName = _lNameController.text
       ..email = _emailController.text
-      ..img = _emailController.text
+      ..imgDp = photo.toString()
       ..phone = int.parse(_phoneController.text)
       ..gender = int.parse(isGender.toString())
       ..address = _addressController.text

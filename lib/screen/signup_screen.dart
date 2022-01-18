@@ -33,30 +33,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.06,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: 20,
-                    margin: const EdgeInsets.only(
-                      bottom: 10,
-                      top: 10,
-                    ),
-                    alignment: Alignment.centerLeft,
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.06,
+                  height: MediaQuery.of(context).size.height * 0.06,
                 ),
                 Card(
                   elevation: 6.8,
@@ -66,6 +45,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              size: 34,
+                            )),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Text(
                           "Sign Up",
                           style: TextStyle(
@@ -279,10 +269,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           child: Container(
                             height: 50,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .height,
+                            width: MediaQuery.of(context).size.height,
                             color: colorGreen,
                             alignment: Alignment.center,
                             child: const Text(
@@ -323,11 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ..password = _signPasswordController.text;
       await DatabaseUtils.db.insertData(loginModal);
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  ProfileScreen()));
-
-      }
+          context, MaterialPageRoute(builder: (context) => ProfileScreen()));
     }
   }
+}

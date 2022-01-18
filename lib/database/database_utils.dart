@@ -17,8 +17,8 @@ class DatabaseUtils {
       "fName TEXT,"
       "lName TEXT,"
       "email TEXT,"
-      "password TEXT"
-      "img TEXT,"
+      "password TEXT,"
+      "imgDp TEXT,"
       "phone INTEGER,"
       "gender INTEGER,"
       "address TEXT,"
@@ -73,14 +73,24 @@ class DatabaseUtils {
       Map<String, dynamic> map = {};
       map["fName"] = userLoginModal.fName;
       map["lName"] = userLoginModal.lName;
-      map["img"] = userLoginModal.img;
+      map["imgDp"] = userLoginModal.imgDp;
       map["phone"] = userLoginModal.phone;
       map["gender"] = userLoginModal.gender;
       map["address"] = userLoginModal.address;
       map["city"] = userLoginModal.city;
       map["pinCode"] = userLoginModal.pinCode;
       final db = await database;
-      await db?.Update("loginData", map,
+      await db?.update("loginData", map,
+          where: 'email=?', whereArgs: [userLoginModal.email]);
+    } catch (e) {}
+  }
+
+  updatePassword(UserLoginModal userLoginModal) async {
+    try {
+      Map<String, dynamic> map = {};
+      map["password"] = userLoginModal.password;
+      final db = await database;
+      db?.update("loginData", map,
           where: 'email=?', whereArgs: [userLoginModal.email]);
     } catch (e) {}
   }

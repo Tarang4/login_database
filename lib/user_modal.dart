@@ -4,7 +4,7 @@ class UserLoginModal {
   String? lName;
   String? email;
   String? password;
-  String? img;
+  String? imgDp;
   int? phone;
   int? gender;
   String? address;
@@ -17,7 +17,7 @@ class UserLoginModal {
       this.lName,
       this.email,
       this.password,
-      this.img,
+      this.imgDp,
       this.phone,
       this.gender,
       this.address,
@@ -30,7 +30,7 @@ class UserLoginModal {
     lName = json['lName'];
     email = json['email'];
     password = json['password'];
-    img = json['img'];
+    imgDp = json['imgDp'];
     phone = json['phone'];
     gender = json['gender'];
     address = json['address'];
@@ -44,7 +44,7 @@ class UserLoginModal {
         "lName": lName,
         "email": email,
         "password": password,
-        "img": img,
+        "imgDp": imgDp,
         "phone": phone,
         "gender": gender,
         "address": address,

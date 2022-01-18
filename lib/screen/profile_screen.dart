@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:login_database/database/database_utils.dart';
+import 'package:login_database/screen/change_password.dart';
 import 'package:login_database/screen/update_screen.dart';
 import 'package:login_database/user_modal.dart';
 import 'package:login_database/widgets/app_colors.dart';
@@ -14,8 +15,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? photo;
-
   List<UserLoginModal> listModal = [];
 
   getData() async {
@@ -45,7 +44,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               itemCount: listModal.length,
               itemBuilder: (BuildContext context, int index) {
                 UserLoginModal userLoginModal = listModal[index];
-
+                String photo = userLoginModal.imgDp.toString();
+                String phone = userLoginModal.phone.toString();
+                String address = userLoginModal.address.toString();
+                String gender = userLoginModal.gender.toString();
+                String pinCode = userLoginModal.pinCode.toString();
+                String city = userLoginModal.city.toString();
                 return Card(
                   elevation: 6.5,
                   margin: EdgeInsets.only(bottom: 20),
@@ -70,8 +74,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   getData();
                                 },
                                 child: Text("Delete")),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChangePassword(
+                                                email: userLoginModal.email
+                                                    .toString(),
+                                              )));
+                                },
+                                child: Text("change")),
                             SizedBox(
-                              height: 20,
+                              height: 0,
                             ),
                             TextButton(
                                 onPressed: () {
@@ -90,7 +105,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     .toString(),
                                               )));
                                 },
-                                child: Text("Update")),
+                                child:phone=="null"&&address=="null"&&pinCode=="null"&&city=="null"&&gender=="null"&&photo=="null"? Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Update"),
+                                    SizedBox(
+                                      width: 2,
+                                    ),
+                                    CircleAvatar(
+                                      radius: 2,
+                                      backgroundColor: Colors.red,
+                                    )
+                                  ],
+                                ):Text("Update"),)
                           ],
                         ),
                         const SizedBox(
@@ -98,32 +125,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Row(
                           children: [
-                            InkWell(
-                              child: photo != null && photo!.isNotEmpty
-                                  ? Container(
-                                      height: 90,
-                                      width: 90,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(70),
-                                      ),
-                                      child: Image.file(
-                                        File(photo ?? ""),
-                                        fit: BoxFit.cover,
-                                      ),
+                            Container(
+                              height: 90,
+                              width: 90,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                color: colorLightGrey,
+                                borderRadius: BorderRadius.circular(70),
+                              ),
+                              child: photo == "null"
+                                  ? Icon(
+                                      Icons.person,
+                                      size: 36,
                                     )
-                                  : Container(
-                                      height: 90,
-                                      width: 90,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(70),
-                                          color: Colors.grey.withOpacity(0.5)),
-                                      child: const Icon(
-                                        Icons.person,
-                                        size: 45,
-                                      ),
+                                  : Image.file(
+                                      File(photo),
+                                      fit: BoxFit.cover,
                                     ),
                             ),
                             const SizedBox(
@@ -132,8 +149,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "First name",
+                                          style: TextStyle(
+                                              fontSize: 14.0,
+                                              color: colorBlack,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          "${userLoginModal.fName.toString()} ",
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Last Name",
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              color: colorBlack,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          "${userLoginModal.lName.toString()} ",
+                                          style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
                                 Text(
-                                  "First name",
+                                  "Phone Number",
                                   style: TextStyle(
                                       fontSize: 14.0,
                                       color: colorBlack,
@@ -143,26 +214,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 5,
                                 ),
                                 Text(
-                                  "${userLoginModal.fName.toString()} ",
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  "Last Name",
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: colorBlack,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  "${userLoginModal.lName.toString()} ",
+                                  phone == "null"
+                                      ? "-"
+                                      : "+91 ${userLoginModal.phone.toString()} ",
                                   style: TextStyle(
                                       fontSize: 15.0,
                                       fontWeight: FontWeight.w400),
@@ -211,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 15,
                         ),
                         Text(
-                          "city",
+                          "Address",
                           style: TextStyle(
                               fontSize: 14.0,
                               color: colorGrey,
@@ -221,7 +275,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 5,
                         ),
                         Text(
-                          "${userLoginModal.city.toString()} ",
+                          address == "null" &&
+                                  city == "null" &&
+                                  pinCode == "null"
+                              ? "-"
+                              : "${userLoginModal.address.toString()}, ${userLoginModal.city.toString()}, ${userLoginModal.pinCode.toString()} ",
+                          style: TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Gender",
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color: colorGrey,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          gender == "null"
+                              ? "-"
+                              : "${userLoginModal.gender.toString()}",
                           style: TextStyle(
                               fontSize: 15.0, fontWeight: FontWeight.w400),
                         ),
