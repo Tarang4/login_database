@@ -12,12 +12,18 @@ class DatabaseUtils {
 
   String? path;
 
-  String table = "CREATE TABLE logindata("
+  String table = "CREATE TABLE loginData("
       "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
       "fName TEXT,"
       "lName TEXT,"
       "email TEXT,"
       "password TEXT"
+      "img TEXT,"
+      "phone INTEGER,"
+      "gender INTEGER,"
+      "address TEXT,"
+      "city TEXT,"
+      "pinCode INTEGER"
       ")";
 
   get database async {
@@ -31,7 +37,7 @@ class DatabaseUtils {
   createDatabase() async {
     try {
       String databasePath = await getDatabasesPath();
-      path = join(databasePath, "logindata.db");
+      path = join(databasePath, "loginData.db");
       return await openDatabase(path ?? "", version: 1,
           onCreate: (Database database, int version) async {
         await database.execute(table);
@@ -41,27 +47,41 @@ class DatabaseUtils {
 
   insertData(UserLoginModal userLoginModal) async {
     try {
-      // Map<String, dynamic> map = {};
-      // map["fName"] = "tarang";
-      // map["lName"] = "tarang sardhara";
-      // map["email"] = "tarang@gmail.com";
+      Map<String, dynamic> map = {};
+      map["fName"] = userLoginModal.fName;
+      map["lName"] = userLoginModal.lName;
+      map["email"] = userLoginModal.email;
+      map["password"] = userLoginModal.password;
 
       final db = await database;
-      await db?.insert("logindata", userLoginModal.toJson());
-    } catch (e) {}
+      await db?.insert("loginData", map);
+    } catch (e) {
+      print(e);
+    }
   }
 
   deleteData({required int id}) async {
     try {
       final db = await database;
-       final result=await db?.rawDelete("DELETE FROM logindata WHERE id = ?",[id]);
+      final result =
+          await db?.rawDelete("DELETE FROM loginData WHERE id = ?", [id]);
     } catch (e) {}
   }
 
-  upDateData({required int id,required String fname,required String lname,required String password}) async {
+  upDateData(UserLoginModal userLoginModal) async {
     try {
+      Map<String, dynamic> map = {};
+      map["fName"] = userLoginModal.fName;
+      map["lName"] = userLoginModal.lName;
+      map["img"] = userLoginModal.img;
+      map["phone"] = userLoginModal.phone;
+      map["gender"] = userLoginModal.gender;
+      map["address"] = userLoginModal.address;
+      map["city"] = userLoginModal.city;
+      map["pinCode"] = userLoginModal.pinCode;
       final db = await database;
-      final result=await db?.rawUpdate("UPDATE logindata SET fName=?,lName=?,password=? WHERE id = ?",[fname,lname,password,id]);
+      await db?.Update("loginData", map,
+          where: 'email=?', whereArgs: [userLoginModal.email]);
     } catch (e) {}
   }
 
@@ -70,7 +90,7 @@ class DatabaseUtils {
     List<UserLoginModal> userList = [];
     try {
       final db = await database;
-      final result = await db.rawQuery("SELECT * FROM logindata");
+      final result = await db.rawQuery("SELECT * FROM loginData");
       result?.forEach((element) {
         userLoginModal = UserLoginModal.fromJson(element);
         userList.add(userLoginModal);

@@ -4,7 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:login_database/database/database_utils.dart';
+import 'package:login_database/screen/profile_screen.dart';
 import 'package:login_database/widgets/app_colors.dart';
+
+import '../user_modal.dart';
 
 class UpaDateScreen extends StatefulWidget {
   final String fName;
@@ -40,6 +44,8 @@ class _UpadateScreenState extends State<UpaDateScreen> {
   final TextEditingController _phoneController = TextEditingController();
 
   final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _pinCodeController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -107,10 +113,8 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => SignUpScreen()));
+                                updateData();
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
                               },
                               child: Text(
                                 "Save",
@@ -300,44 +304,9 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                           width: double.infinity,
                           height: 33,
                           child: TextFormField(
-
                             controller: _phoneController,
                             textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.emailAddress,
-                            cursorColor: Colors.black,
-                            style: const TextStyle(
-                                color: colorBlack,
-                                fontSize: 18,
-                                fontWeight: FontWeight.normal),
-                            decoration: const InputDecoration(
-                              border: UnderlineInputBorder(
-                                borderSide: BorderSide(color: colorGreen),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: colorGreen),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text("Address",
-                            style: TextStyle(
-                                color: colorGrey,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w400)),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 33,
-                          child: TextFormField(
-
-                            controller: _addressController,
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.number,
                             cursorColor: Colors.black,
                             style: const TextStyle(
                                 color: colorBlack,
@@ -435,6 +404,135 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text("Address",
+                            style: TextStyle(
+                                color: colorGrey,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 33,
+                          child: TextFormField(
+                            controller: _addressController,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
+                            cursorColor: Colors.black,
+                            style: const TextStyle(
+                                color: colorBlack,
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal),
+                            decoration: const InputDecoration(
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: colorGreen),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: colorGreen),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 150,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("city",
+                                      style: TextStyle(
+                                          color: colorGrey,
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w400)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 33,
+                                    child: TextFormField(
+                                      controller: _cityController,
+                                      textInputAction: TextInputAction.next,
+                                      keyboardType: TextInputType.text,
+                                      cursorColor: Colors.black,
+                                      style: const TextStyle(
+                                          color: colorBlack,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.normal),
+                                      decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: colorGreen),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: colorGreen),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: 150,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Pin Code",
+                                        style: TextStyle(
+                                            color: colorGrey,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w400)),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 33,
+                                      child: TextFormField(
+                                        controller: _pinCodeController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.number,
+                                        cursorColor: Colors.black,
+                                        style: const TextStyle(
+                                            color: colorBlack,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.normal),
+                                        decoration: const InputDecoration(
+                                          border: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: colorGreen),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: colorGreen),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(
+                          height: 20,
+                        ),
 
                         const SizedBox(
                           height: 30,
@@ -516,5 +614,20 @@ class _UpadateScreenState extends State<UpaDateScreen> {
     setState(() {
       photo = getIamge?.path;
     });
+  }
+
+  updateData() async {
+    UserLoginModal loginModal = UserLoginModal();
+    loginModal
+      ..fName = _fNameController.text
+      ..lName = _lNameController.text
+      ..email = _emailController.text
+      ..img = _emailController.text
+      ..phone = int.parse(_phoneController.text)
+      ..gender = int.parse(isGender.toString())
+      ..address = _addressController.text
+      ..city = _cityController.text
+      ..pinCode = int.parse(_pinCodeController.text);
+    return await DatabaseUtils.db.upDateData(loginModal);
   }
 }

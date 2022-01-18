@@ -34,7 +34,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.06,
                 ),
                 InkWell(
                   onTap: () {
@@ -50,7 +53,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.06,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.06,
                 ),
                 Card(
                   elevation: 6.8,
@@ -232,30 +238,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ProfileScreen()));
-                                },
-                                child: Text("Next")),
-                            TextButton(
-                                onPressed: () {
-                                  UserLoginModal loginModal = UserLoginModal(
-                                      fName: _fNameController.text,
-                                      lName: _lNameController.text,
-                                      email: _signEmailController.text,
-                                      password: _signPasswordController.text);
-                                  DatabaseUtils.db.insertData(loginModal);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ProfileScreen()));
-                                },
-                                child: Text("simple insert")),
+                            // TextButton(
+                            //     onPressed: () {
+                            //       // Navigator.push(
+                            //       //     context,
+                            //       //     MaterialPageRoute(
+                            //       //         builder: (context) =>
+                            //       //             ProfileScreen()));
+                            //     },
+                            //     child: Text("Next")),
+                            // TextButton(
+                            //     // onPressed: () {
+                            //     //   UserLoginModal loginModal = UserLoginModal(
+                            //     //       fName: _fNameController.text,
+                            //     //       lName: _lNameController.text,
+                            //     //       email: _signEmailController.text,
+                            //     //       password: _signPasswordController.text);
+                            //     //   DatabaseUtils.db.insertData(loginModal);
+                            //     //   Navigator.push(
+                            //     //       context,
+                            //     //       MaterialPageRoute(
+                            //     //           builder: (context) =>
+                            //     //               ProfileScreen()));
+                            //     // },
+                            //     onPressed: () {  },
+                            //     child: Text("simple insert")),
                           ],
                         ),
                         const SizedBox(
@@ -272,7 +279,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           child: Container(
                             height: 50,
-                            width: MediaQuery.of(context).size.height,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .height,
                             color: colorGreen,
                             alignment: Alignment.center,
                             child: const Text(
@@ -296,23 +306,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
   signInClick() async {
     Database db = await DatabaseUtils.db.database;
     final result = await db.rawQuery(
-        "SELECT * FROM logindata WHERE email=?", [_signEmailController.text]);
+        "SELECT * FROM loginData WHERE email=?", [_signEmailController.text]);
     if (result.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Email is already Exist \n please select new email"),
-          backgroundColor: colorLightGrey,
+          backgroundColor: colorBlack,
         ),
       );
     } else {
-      UserLoginModal loginModal = UserLoginModal(
-          fName: _fNameController.text,
-          lName: _lNameController.text,
-          email: _signEmailController.text,
-          password: _signPasswordController.text);
-      DatabaseUtils.db.insertData(loginModal);
+      UserLoginModal loginModal = UserLoginModal();
+      loginModal
+        ..fName = _fNameController.text
+        ..lName = _lNameController.text
+        ..email = _signEmailController.text
+        ..password = _signPasswordController.text;
+      await DatabaseUtils.db.insertData(loginModal);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  ProfileScreen()));
+
+      }
     }
   }
-}

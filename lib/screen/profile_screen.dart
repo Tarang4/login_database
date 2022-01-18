@@ -207,6 +207,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           style: TextStyle(
                               fontSize: 15.0, fontWeight: FontWeight.w400),
                         ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "city",
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color: colorGrey,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "${userLoginModal.city.toString()} ",
+                          style: TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.w400),
+                        ),
                       ],
                     ),
                   ),

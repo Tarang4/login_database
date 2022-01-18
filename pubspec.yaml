@@ -37,7 +37,7 @@ dependencies:
   sqflite: ^2.0.1
   email_validator: ^2.0.1
   fluttertoast: ^8.0.8
-  image_picker: ^0.8.4+4
+  image_picker:
 
 
 dev_dependencies:
