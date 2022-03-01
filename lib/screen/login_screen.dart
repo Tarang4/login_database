@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_database/database/database_utils.dart';
 import 'package:login_database/screen/change_password.dart';
+import 'package:login_database/screen/main_screen.dart';
 import 'package:login_database/screen/profile_screen.dart';
 import 'package:login_database/widgets/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../user_modal.dart';
@@ -19,6 +21,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late SharedPreferences prefs;
+
+
   final loginScreenKey = GlobalKey<FormState>();
   bool isPassword=true;
 
@@ -26,18 +31,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   FocusNode emailFocus = FocusNode();
 
-  bool validateStructure(String value) {
-    String pattern =
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-    RegExp regExp = RegExp(pattern);
-    return regExp.hasMatch(value);
+  save() async
+  {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString("email", _emailController.text);
+    prefs.setString("password", _passwordController.text);
   }
 
-  bool validatePassword(String value) {
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-    return regex.hasMatch(value);
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -256,8 +257,9 @@ class _LoginScreenState extends State<LoginScreen> {
           "SELECT * FROM logindata WHERE email=? AND password=?",
           [_emailController.text, _passwordController.text]);
       if (login.isNotEmpty) {
+        save();
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Invalid Password"),
@@ -283,6 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
               builder: (context) => ForgotPassword(
                 email: _emailController.text,
               )));
+      
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

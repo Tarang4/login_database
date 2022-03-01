@@ -36,7 +36,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   bool validatePassword(String value) {
     RegExp regex =
-    RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
     return regex.hasMatch(value);
   }
 
@@ -71,7 +71,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back,size: 34,)),const SizedBox(
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              size: 34,
+                            )),
+                        const SizedBox(
                           height: 40,
                         ),
                         Text(
@@ -79,7 +87,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           style: TextStyle(
                               fontSize: 30.0, fontWeight: FontWeight.w700),
                         ),
-
                         const SizedBox(
                           height: 40,
                         ),
@@ -126,7 +133,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         const SizedBox(
                           height: 40,
                         ),
-
                         Text("Enter New Password",
                             style: TextStyle(
                                 color: colorGrey,
@@ -161,11 +167,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               suffixIcon: IconButton(
                                 icon: isPasswordNew
                                     ? Icon(
-                                  Icons.visibility,
-                                  color: Colors.black,
-                                )
+                                        Icons.visibility,
+                                        color: Colors.black,
+                                      )
                                     : Icon(Icons.visibility_off,
-                                    color: Colors.black),
+                                        color: Colors.black),
                                 onPressed: () {
                                   setState(() {
                                     isPasswordNew = !isPasswordNew;
@@ -243,7 +249,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         InkWell(
                           onTap: () {
                             if (loginScreenKey.currentState!.validate()) {
-                              if (_new1Controller.text == _new2Controller.text) {
+                              if (_new1Controller.text ==
+                                  _new2Controller.text) {
                                 changePass();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -286,7 +293,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   changePass() async {
     Database db = await DatabaseUtils.db.database;
     final result = await db.rawQuery(
-        "SELECT * FROM logindata WHERE email=? AND phone=? ", [email.toString(),_phoneController.text]);
+        "SELECT * FROM logindata WHERE email=? AND phone=? ",
+        [email.toString(), _phoneController.text]);
     if (result.isNotEmpty) {
       UserLoginModal userLoginModal = UserLoginModal();
       userLoginModal

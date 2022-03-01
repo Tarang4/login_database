@@ -11,18 +11,12 @@ import 'package:login_database/widgets/app_colors.dart';
 import '../user_modal.dart';
 
 class UpaDateScreen extends StatefulWidget {
-  final String fName;
-  final String lName;
-  final String eMail;
-  final String password;
+  final int? id;
 
-  const UpaDateScreen(
-      {Key? key,
-      required this.fName,
-      required this.lName,
-      required this.eMail,
-      required this.password})
-      : super(key: key);
+  const UpaDateScreen({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   _UpadateScreenState createState() => _UpadateScreenState();
@@ -31,15 +25,13 @@ class UpaDateScreen extends StatefulWidget {
 class _UpadateScreenState extends State<UpaDateScreen> {
   String? photo;
   int? isGender;
-  String? fName;
-  String? lName;
-  String? eMail;
-  String? password;
+  bool isPassword = true;
 
   final ImagePicker _imagePicker = ImagePicker();
   final updateScreenKey = GlobalKey<FormState>();
 
   final TextEditingController _fNameController = TextEditingController();
+
   final TextEditingController _lNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
@@ -52,31 +44,34 @@ class _UpadateScreenState extends State<UpaDateScreen> {
 
   FocusNode emailFocus = FocusNode();
 
-  bool validateStructure(String value) {
-    String pattern =
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-    RegExp regExp = RegExp(pattern);
-    return regExp.hasMatch(value);
-  }
+  UserLoginModal listModal = UserLoginModal();
 
-  bool validatePassword(String value) {
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-    return regex.hasMatch(value);
+  getData() async {
+    UserLoginModal modalList = await DatabaseUtils.db.getDataModal(widget.id!);
+    setState(() {
+      listModal = modalList;
+      String phone = (listModal.phone ?? 0).toString();
+      String pinCode = (listModal.pinCode ?? 0).toString();
+
+      _fNameController.text = listModal.fName ?? "";
+      _lNameController.text = listModal.lName ?? "";
+      _emailController.text = listModal.email ?? "";
+      _passwordController.text = listModal.password ?? "";
+      _addressController.text = listModal.address ?? "";
+      _cityController.text = listModal.city ?? "";
+      _phoneController.text = phone == "0" ? "" : phone;
+      _pinCodeController.text = pinCode == "0" ? "" : pinCode;
+      isGender = listModal.gender;
+      photo = listModal.imgDp;
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
-    fName = widget.fName;
-    lName = widget.lName;
-    eMail = widget.eMail;
-    password = widget.password;
-    _fNameController.text = fName!;
-    _lNameController.text = lName!;
-    _emailController.text = eMail!;
-    _passwordController.text = password!;
+    getData();
   }
 
   @override
@@ -102,31 +97,34 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                         left: 16, right: 16, top: 14, bottom: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [ IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back,
-                            size: 34,
-                          )),
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              size: 34,
+                            )),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Profile Edit,",
+                              "Edit Your Details",
                               style: TextStyle(
                                   fontSize: 30.0, fontWeight: FontWeight.w700),
                             ),
                             TextButton(
                               onPressed: () async {
-                                updateData();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProfileScreen()));
+                                if (updateScreenKey.currentState!.validate()) {
+                                  updateData();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ProfileScreen()));
+                                }
                               },
                               child: Text(
                                 "Save",
@@ -192,9 +190,6 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                                 return 'Please Enter Your Name';
                               }
                             },
-                            onChanged: (nameVal) => setState(() {
-                              var _fName = nameVal;
-                            }),
                             controller: _fNameController,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.text,
@@ -316,6 +311,14 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                           width: double.infinity,
                           height: 33,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Phone Number';
+                              }
+                              if (_phoneController.text.length < 10) {
+                                return 'Wrong Phone Number';
+                              }
+                            },
                             controller: _phoneController,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
@@ -390,7 +393,8 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                           width: double.infinity,
                           height: 33,
                           child: TextFormField(
-                            obscureText: true,
+                            obscureText: isPassword,
+                            readOnly: true,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Enter Password';
@@ -407,7 +411,21 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                                 color: colorBlack,
                                 fontSize: 18,
                                 fontWeight: FontWeight.normal),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: isPassword
+                                    ? Icon(
+                                        Icons.visibility,
+                                        color: Colors.black,
+                                      )
+                                    : Icon(Icons.visibility_off,
+                                        color: Colors.black),
+                                onPressed: () {
+                                  setState(() {
+                                    isPassword = !isPassword;
+                                  });
+                                },
+                              ),
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(color: colorGreen),
                               ),
@@ -433,8 +451,13 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                           height: 33,
                           child: TextFormField(
                             controller: _addressController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Address';
+                              }
+                            },
                             textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.streetAddress,
                             cursorColor: Colors.black,
                             style: const TextStyle(
                                 color: colorBlack,
@@ -473,6 +496,11 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                                     height: 33,
                                     child: TextFormField(
                                       controller: _cityController,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Please Enter City';
+                                        }
+                                      },
                                       textInputAction: TextInputAction.next,
                                       keyboardType: TextInputType.text,
                                       cursorColor: Colors.black,
@@ -517,6 +545,15 @@ class _UpadateScreenState extends State<UpaDateScreen> {
                                       height: 33,
                                       child: TextFormField(
                                         controller: _pinCodeController,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Please Enter PinCode';
+                                          }
+                                          if (_passwordController.text.length <
+                                              6) {
+                                            return 'Please Enter valid PinCode';
+                                          }
+                                        },
                                         textInputAction: TextInputAction.next,
                                         keyboardType: TextInputType.number,
                                         cursorColor: Colors.black,

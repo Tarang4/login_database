@@ -6,6 +6,9 @@ import 'package:login_database/screen/change_password.dart';
 import 'package:login_database/screen/update_screen.dart';
 import 'package:login_database/user_modal.dart';
 import 'package:login_database/widgets/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -15,6 +18,27 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+  late SharedPreferences prefs;
+  String emailSd = '';
+
+  String passwordSd = '';
+
+
+  delete() async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.remove('email');
+    prefs.remove('password');
+    setState(() {});
+  }
+
+  retrieve() async {
+    prefs = await SharedPreferences.getInstance();
+    emailSd = prefs.getString('email')!;
+    passwordSd = prefs.getString('password')!;
+    setState(() {});
+  }
+
   List<UserLoginModal> listModal = [];
 
   getData() async {
@@ -34,8 +58,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(appBar: AppBar(
+        title: Text("Home page"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                retrieve();
+              },
+              icon: Icon(Icons.slideshow)),
+          IconButton(
+              onPressed: () {
+                delete();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              },
+              icon: Icon(Icons.logout)),
+        ],
+      ),
         body: SingleChildScrollView(
+
+
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             child: ListView.builder(
@@ -58,9 +100,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          "${emailSd}        and       ${passwordSd}",
+                          style: TextStyle(
+                              fontSize: 10.0, fontWeight: FontWeight.w700,color: colorBlack),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+
                             Text(
                               "user ${userLoginModal.id} ",
                               style: TextStyle(
@@ -89,35 +137,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 0,
                             ),
                             TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => UpaDateScreen(
-                                                fName: userLoginModal.fName
-                                                    .toString(),
-                                                lName: userLoginModal.lName
-                                                    .toString(),
-                                                password: userLoginModal
-                                                    .password
-                                                    .toString(),
-                                                eMail: userLoginModal.email
-                                                    .toString(),
-                                              )));
-                                },
-                                child:phone=="null"&&address=="null"&&pinCode=="null"&&city=="null"&&gender=="null"&&photo=="null"? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Update"),
-                                    SizedBox(
-                                      width: 2,
+                              onPressed: () {
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UpaDateScreen(id: userLoginModal.id!.toInt(),
+
+
                                     ),
-                                    CircleAvatar(
-                                      radius: 2,
-                                      backgroundColor: Colors.red,
+                                  ),
+                                );
+                              },
+                              child: phone == "null" &&
+                                      address == "null" &&
+                                      pinCode == "null" &&
+                                      city == "null" &&
+                                      gender == "null" &&
+                                      photo == "null"
+                                  ? Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: const [
+                                        Text("Update"),
+                                        SizedBox(
+                                          width: 2,
+                                        ),
+                                        CircleAvatar(
+                                          radius: 2,
+                                          backgroundColor: Colors.red,
+                                        )
+                                      ],
                                     )
-                                  ],
-                                ):Text("Update"),)
+                                  : Text("Update"),
+                            )
                           ],
                         ),
                         const SizedBox(

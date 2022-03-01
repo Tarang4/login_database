@@ -108,4 +108,16 @@ class DatabaseUtils {
     } catch (e) {}
     return userList;
   }
+
+  getDataModal(int id) async {
+    UserLoginModal userLoginModal = UserLoginModal();
+    try {
+      final db = await database;
+      final result = await db?.rawQuery("SELECT * FROM loginData WHERE id=?",[id]);
+      result?.forEach((element) {
+        userLoginModal = UserLoginModal.fromJson(element);
+      });
+    } catch (e) {}
+    return userLoginModal;
+  }
 }
